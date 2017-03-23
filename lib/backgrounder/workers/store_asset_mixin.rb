@@ -32,9 +32,14 @@ module CarrierWave
 
       def store_directories(record)
         asset, asset_tmp = record.send(:"#{column}"), record.send(:"#{column}_tmp")
-        cache_directory  = File.expand_path(asset.cache_dir, asset.root)
-        @cache_path      = File.join(cache_directory, asset_tmp)
-        @tmp_directory   = File.join(cache_directory, asset_tmp.split("/").first)
+        if is_fog?
+          cache_url = "#{CarrierWave::Uploader::Base.fog_directory}.s3.amazonaws.com"
+          @cache_path = "#{cache_url}/#{asset.cache_dir}/#{asset_tmp}"
+        else
+          cache_directory  = File.expand_path(asset.cache_dir, asset.root)
+          @cache_path      = File.join(cache_directory, asset_tmp)
+          @tmp_directory   = File.join(cache_directory, asset_tmp.split("/").first)
+        end
       end
 
       def is_fog?
