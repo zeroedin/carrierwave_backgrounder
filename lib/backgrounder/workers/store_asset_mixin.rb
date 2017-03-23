@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require "uri"
 require "carrierwave"
 require "carrierwave/storage/fog"
 require "carrierwave/storage/file"
@@ -51,7 +52,7 @@ module CarrierWave
       def store_directories(record)
         asset, asset_tmp = record.send(:"#{column}"), record.send(:"#{column}_tmp")
         if is_fog?
-          cache_url = "#{CarrierWave::Uploader::Base.fog_directory}.s3.amazonaws.com"
+          cache_url = "http://#{CarrierWave::Uploader::Base.fog_directory}.s3.amazonaws.com"
           @cache_path = "#{cache_url}/#{asset.cache_dir}/#{asset_tmp}"
           @tmp_directory = "#{asset.cache_dir}/#{asset_tmp}"
         else
