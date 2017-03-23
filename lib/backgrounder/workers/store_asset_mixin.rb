@@ -1,4 +1,10 @@
 # encoding: utf-8
+
+require "carrierwave"
+require "carrierwave/storage/fog"
+require "carrierwave/storage/file"
+require "carrierwave/uploader"
+
 module CarrierWave
   module Workers
 
