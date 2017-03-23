@@ -37,6 +37,14 @@ module CarrierWave
         @tmp_directory   = File.join(cache_directory, asset_tmp.split("/").first)
       end
 
+      def is_fog?
+        if CarrierWave::Uploader::Base.cache_storage == CarrierWave::Storage::Fog
+          true
+        else
+          false
+        end
+      end
+
     end # StoreAssetMixin
 
   end # Workers
