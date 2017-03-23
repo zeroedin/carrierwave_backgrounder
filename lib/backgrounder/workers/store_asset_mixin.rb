@@ -40,7 +40,7 @@ module CarrierWave
       def is_fog?
         if CarrierWave::Uploader::Base.cache_storage == CarrierWave::Storage::Fog
           true
-        else
+        elsif CarrierWave::Uploader::Base.cache_storage == CarrierWave::Storage::File
           false
         end
       end
