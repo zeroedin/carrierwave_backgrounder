@@ -31,7 +31,7 @@ module CarrierWave
             if f.class.to_s == "File"
               record.send :"#{column}=", f
             elsif f.class.to_s == "Tmpfile"
-              f.open { |ff| record.send :"#{column}=", ff }
+              f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
             end
           end
 
