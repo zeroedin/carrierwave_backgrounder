@@ -38,14 +38,14 @@ module CarrierWave
 
           if record.save!
             if is_fog?
-              credential_keys = CarrierWave::Uploader::Base.fog_credentials
-              bucket_name = CarrierWave::Uploader::Base.fog_directory
-              client = Aws::S3::Client.new(
-                          region:            credential_keys[:region],
-                          access_key_id:     credential_keys[:aws_access_key_id],
-                          secret_access_key: credential_keys[:aws_secret_access_key]
-                        )
-              client.delete_object(bucket: bucket_name, key: tmp_directory)
+              # credential_keys = CarrierWave::Uploader::Base.fog_credentials
+              # bucket_name = CarrierWave::Uploader::Base.fog_directory
+              # client = Aws::S3::Client.new(
+              #             region:            credential_keys[:region],
+              #             access_key_id:     credential_keys[:aws_access_key_id],
+              #             secret_access_key: credential_keys[:aws_secret_access_key]
+              #           )
+              # client.delete_object(bucket: bucket_name, key: tmp_directory)
             else
               FileUtils.rm_r(tmp_directory, :force => true)
             end
