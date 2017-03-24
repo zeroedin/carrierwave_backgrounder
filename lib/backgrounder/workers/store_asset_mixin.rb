@@ -30,7 +30,7 @@ module CarrierWave
           open(cache_path) do |f|
             if f.class.to_s == "File"
               record.send :"#{column}=", f
-            elsif f.class.to_s == "Tmpfile"
+            elsif f.class.to_s == "Tempfile"
               # f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
               f.open { |ff| record.send :"#{column}=", ff.encode!("UTF-8", "UTF-8", invalid: :replace) }
             end
