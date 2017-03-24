@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require "uri"
+require "aws-sdk"
 require "carrierwave"
 require "carrierwave/storage/fog"
 require "carrierwave/storage/file"
@@ -26,16 +27,20 @@ module CarrierWave
           record.send :"process_#{column}_upload=", true
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
-          open(cache_path) do |f|
-            if f.class.to_s == "File"
-              record.send :"#{column}=", f
-            elsif f.class.to_s == "Tmpfile"
-              record.send :"#{column}=", f.open
-            end
+          if is_fog?
+            credential_keys = CarrierWave::Uploader::Base.fog_credentials
+            bucket_name = CarrierWave::Uploader::Base.fog_directory
+            client = Aws::S3::Client.new(
+                        region:            credential_keys[:region],
+                        access_key_id:     credential_keys[:aws_access_key_id],
+                        secret_access_key: credential_keys[:aws_secret_access_key]
+                      )
+            record.send :"#{column}=", client.get_object(bucket: bucket_name, key: tmp_directory).body.read
+          else
+            open(cache_path) { |f| record.send :"#{column}=", f }
           end
           if record.save!
             if is_fog?
-              require "aws-sdk"
               credential_keys = CarrierWave::Uploader::Base.fog_credentials
               bucket_name = CarrierWave::Uploader::Base.fog_directory
               client = Aws::S3::Client.new(
@@ -43,7 +48,7 @@ module CarrierWave
                           access_key_id:     credential_keys[:aws_access_key_id],
                           secret_access_key: credential_keys[:aws_secret_access_key]
                         )
-              client.delete_object(bucket: bucket_name, key: @tmp_directory)
+              client.delete_object(bucket: bucket_name, key: tmp_directory)
             else
               FileUtils.rm_r(tmp_directory, :force => true)
             end
