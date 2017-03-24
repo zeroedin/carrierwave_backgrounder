@@ -37,7 +37,7 @@ module CarrierWave
             if is_fog?
               require "aws-sdk"
               credential_keys = CarrierWave::Uploader::Base.fog_credentials
-              bucket_name = CarrierWave::Workers::Base.fog_directory
+              bucket_name = CarrierWave::Uploader::Base.fog_directory
               client = AWS::S3::Client.new(
                           region:            credential_keys[:region],
                           access_key_id:     credential_keys[:aws_access_key_id],
