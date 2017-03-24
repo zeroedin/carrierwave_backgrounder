@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require "uri"
+require "aes-sdk"
 require "carrierwave"
 require "carrierwave/storage/fog"
 require "carrierwave/storage/file"
