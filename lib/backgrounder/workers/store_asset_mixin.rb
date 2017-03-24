@@ -31,7 +31,8 @@ module CarrierWave
             if f.class.to_s == "File"
               record.send :"#{column}=", f
             elsif f.class.to_s == "Tmpfile"
-              f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
+              # f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
+              f.open { |ff| record.send :"#{column}=", ff.encode!("UTF-8", "UTF-8", invalid: :replace) }
             end
           end
 
