@@ -27,6 +27,13 @@ module CarrierWave
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
           open(cache_path) { |f| record.send :"#{column}=", f }
+          open(cache_path) do |f|
+            if f.class.to_s == "File"
+              record.send :"#{column}=", f
+            elsif f.class.to_s == "Tmpfile"
+              record.send :"#{column}=", f.open
+            end
+          end
           if record.save!
             if is_fog?
               require "aws-sdk"
