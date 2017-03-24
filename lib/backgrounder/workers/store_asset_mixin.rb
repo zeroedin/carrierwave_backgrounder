@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require "uri"
-require "aws-sdk"
 require "carrierwave"
 require "carrierwave/storage/fog"
 require "carrierwave/storage/file"
@@ -39,7 +38,7 @@ module CarrierWave
               require "aws-sdk"
               credential_keys = CarrierWave::Uploader::Base.fog_credentials
               bucket_name = CarrierWave::Uploader::Base.fog_directory
-              client = AWS::S3::Client.new(
+              client = Aws::S3::Client.new(
                           region:            credential_keys[:region],
                           access_key_id:     credential_keys[:aws_access_key_id],
                           secret_access_key: credential_keys[:aws_secret_access_key]
