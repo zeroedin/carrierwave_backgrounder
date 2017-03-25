@@ -33,11 +33,7 @@ module CarrierWave
             elsif f.class.to_s == "Tempfile"
               # f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
               # f.open { |ff| record.send :"#{column}=", ff.encode!("UTF-8", "UTF-8", invalid: :replace) }
-              img = ""
-              f.open.binmode.each_line do |line|
-                img << line
-              end
-              img = img.delete("\u0000")
+              img = f.read
               record.send :"#{column}=", img
             end
           end
