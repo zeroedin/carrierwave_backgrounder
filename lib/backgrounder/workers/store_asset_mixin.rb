@@ -34,7 +34,7 @@ module CarrierWave
               # f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
               # f.open { |ff| record.send :"#{column}=", ff.encode!("UTF-8", "UTF-8", invalid: :replace) }
               img = ""
-              f.open.each_line { |line| img << line.eancode!("UTF-8", "UTF-8", invalid: :replace) }
+              f.open.each_line { |line| img << line.encode!("UTF-8", "UTF-8", invalid: :replace) }
               record.send :"#{column}=", img
             end
           end
