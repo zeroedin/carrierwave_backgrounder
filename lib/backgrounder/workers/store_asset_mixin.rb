@@ -37,7 +37,7 @@ module CarrierWave
               f.open.binmode.each_line do |line|
                 img << line
               end
-              record.send :"#{column}=", img
+              record.send :"#{column}=", img.delete!("\u0000")
             end
           end
 
