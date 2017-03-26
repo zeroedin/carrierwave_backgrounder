@@ -31,7 +31,8 @@ module CarrierWave
             if f.class.to_s == "File"
               record.send :"#{column}=", f
             elsif f.class.to_s == "Tempfile"
-              img = File.new("/tmp/#{tmp_directory}", "w+b").write(f.read)
+              img = File.new("/tmp/#{tmp_directory}", "w+b")
+              img.write(f.read)
               record.send :"#{column}=", img
             end
           end
