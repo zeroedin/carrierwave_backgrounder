@@ -27,13 +27,12 @@ module CarrierWave
           record.send :"process_#{column}_upload=", true
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
-          open(cache_path, "rb") do |f|
+          open(cache_path) do |f|
             if f.class.to_s == "File"
               record.send :"#{column}=", f
             elsif f.class.to_s == "Tempfile"
-              # f.open { |ff| record.send :"#{column}=", ff.scrub('?') }
-              # f.open { |ff| record.send :"#{column}=", ff.encode!("UTF-8", "UTF-8", invalid: :replace) }
-              img = f.read
+              File.new("/tmp/#{tmp_directory}", "w+b").write(f.read)
+              img = File.new("/tmp/#{tmp_directoryp}", "r+b")
               record.send :"#{column}=", img
             end
           end
