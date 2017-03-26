@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require "uri"
+require "open-uri"
 require "aws-sdk"
 require "carrierwave"
 require "carrierwave/storage/fog"
@@ -28,13 +28,7 @@ module CarrierWave
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
           open(cache_path) do |f|
-            if f.class.to_s == "File"
-              record.send :"#{column}=", f
-            elsif f.class.to_s == "Tempfile"
-              File.new("/tmp/#{tmp_directory}", "w+b").write(f.read)
-              img = File.new("/tmp/#{tmp_directoryp}", "r+b")
-              record.send :"#{column}=", img
-            end
+            record.send :"#{column}=", f
           end
 
           if record.save!
