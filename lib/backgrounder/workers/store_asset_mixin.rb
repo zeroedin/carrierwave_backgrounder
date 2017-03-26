@@ -30,9 +30,8 @@ module CarrierWave
           open(cache_path) do |f|
             if f.class.to_s == "File"
               record.send :"#{column}=", f
-            elsif f.class.to_s == "Tempfile"
-              img = File.new("/tmp/#{tmp_directory}", "w+b")
-              img.write(f.read)
+            else
+              img = f.open
               record.send :"#{column}=", img
             end
           end
