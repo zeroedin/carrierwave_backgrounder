@@ -31,8 +31,7 @@ module CarrierWave
             if f.class.to_s == "File"
               record.send :"#{column}=", f
             else
-              img = f.open
-              record.send :"#{column}=", img
+              (record.send :"{column}").send :store!, f
             end
           end
 
