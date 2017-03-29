@@ -31,7 +31,7 @@ module CarrierWave
             if f.class.to_s == "File"
               record.send :"#{column}=", f
             else
-              (record.send :"#{column}").send :cache!, f
+              (record.send :"#{column}").send :store!, f
             end
           end
 
