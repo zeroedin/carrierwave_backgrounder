@@ -30,8 +30,6 @@ module CarrierWave
           open(cache_path) do |f|
             if f.class.to_s == "File"
               record.send :"#{column}=", f
-            else
-              (record.send :"#{column}").store! f
             end
           end
 
