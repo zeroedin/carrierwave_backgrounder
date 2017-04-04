@@ -27,9 +27,13 @@ module CarrierWave
           record.send :"process_#{column}_upload=", true
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
+          p cache_path
+          p tmp_directory
           open(cache_path) do |f|
             if f.class.to_s == "File"
               record.send :"#{column}=", f
+            else
+              (record.send :"#{column}").store! f
             end
           end
 
