@@ -29,6 +29,7 @@ module CarrierWave
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
           p cache_path
           p tmp_directory
+          p record.send(:"#{column}").cache_path
           open(cache_path) do |f|
             record.send :"#{column}=", f
             record.send(:"#{column}").cache! f
