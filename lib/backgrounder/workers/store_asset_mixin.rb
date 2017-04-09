@@ -35,7 +35,7 @@ module CarrierWave
               record.send :"#{column}=", f
             else
               uploader = record.send :"#{column}"
-              uploader.store! f
+              uploader.cache! f
             end
           end
 
