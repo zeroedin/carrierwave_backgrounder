@@ -31,7 +31,12 @@ module CarrierWave
           p tmp_directory
           p record.send(:"#{column}").cache_path
           open(cache_path) do |f|
-            record.send :"#{column}=", f
+            if f.class.to_s == "File"
+              record.send :"#{column}=", f
+            else
+              uploader = record.send :"#{column}"
+              uploader.store! f
+            end
           end
 
           if record.save!
