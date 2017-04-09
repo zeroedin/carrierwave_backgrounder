@@ -32,7 +32,6 @@ module CarrierWave
           p record.send(:"#{column}").cache_path
           open(cache_path) do |f|
             record.send :"#{column}=", f
-            record.send(:"#{column}").cache! f
           end
 
           if record.save!
