@@ -64,7 +64,7 @@ module CarrierWave
         asset, asset_tmp = record.send(:"#{column}"), record.send(:"#{column}_tmp")
         if is_fog?
           cache_url = "http://#{CarrierWave::Uploader::Base.fog_directory}.s3.amazonaws.com"
-          @cache_path = "#{cache_url}#{asset.cache_dir}/#{asset_tmp}"
+          @cache_path = "#{cache_url}/#{asset.cache_dir}/#{asset_tmp}"
           @tmp_directory = "#{asset.cache_dir}/#{asset_tmp}"
         else
           cache_directory  = File.expand_path(asset.cache_dir, asset.root)
