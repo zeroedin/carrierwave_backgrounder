@@ -31,7 +31,7 @@ module CarrierWave
         if record && record.send(:"#{column}_tmp")
 
           at 25, "Uploading"
-          status = Sidekiq::Status::get_all job.provider_job_id
+          status = Sidekiq::Status::get_all self.provider_job_id
           ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
 
           store_directories(record)
@@ -40,7 +40,7 @@ module CarrierWave
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
 
           at 65, "Saving"
-          status = Sidekiq::Status::get_all job.provider_job_id
+          status = Sidekiq::Status::get_all self.provider_job_id
           ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
 
           open(cache_path) do |f|
