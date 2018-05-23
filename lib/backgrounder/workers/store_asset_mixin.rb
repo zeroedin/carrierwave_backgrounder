@@ -22,7 +22,7 @@ module CarrierWave
 
       def perform(*args)
         file = Upload.find(args[1])
-        at 30, "Performing"
+        at 60, "Performing"
         status = Sidekiq::Status::get_all self.provider_job_id
         ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
 
@@ -30,7 +30,7 @@ module CarrierWave
 
         if record && record.send(:"#{column}_tmp")
 
-          at 50, "Uploading"
+          at 80, "Uploading"
           status = Sidekiq::Status::get_all self.provider_job_id
           ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
 
