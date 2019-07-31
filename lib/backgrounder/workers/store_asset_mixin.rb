@@ -24,42 +24,32 @@ module CarrierWave
         file = Upload.find(args[1])
         at 60, "Performing"
         status = Sidekiq::Status::get_all self.provider_job_id
-        ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
+        ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
         record = super(*args)
 
         if record && record.send(:"#{column}_tmp")
 
-          at 80, "Uploading"
+          at 75, "Uploading"
           status = Sidekiq::Status::get_all self.provider_job_id
-          ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
+          ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
           store_directories(record)
+          
           record.send :"process_#{column}_upload=", true
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
 
           at 90, "Saving"
           status = Sidekiq::Status::get_all self.provider_job_id
-          ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file.key}
+          ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
           open(cache_path) do |f|
             record.send :"#{column}=", f
           end
 
           if record.save!
-            if is_fog?
-              # credential_keys = CarrierWave::Uploader::Base.fog_credentials
-              # bucket_name = CarrierWave::Uploader::Base.fog_directory
-              # client = Aws::S3::Client.new(
-              #             region:            credential_keys[:region],
-              #             access_key_id:     credential_keys[:aws_access_key_id],
-              #             secret_access_key: credential_keys[:aws_secret_access_key]
-              #           )
-              # client.delete_object(bucket: bucket_name, key: tmp_directory)
-            else
-              FileUtils.rm_r(tmp_directory, :force => true)
-            end
+            FileUtils.rm_r(tmp_directory, :force => true)
           end
         else
           when_not_ready
