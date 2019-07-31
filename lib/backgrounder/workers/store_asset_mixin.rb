@@ -35,7 +35,7 @@ module CarrierWave
           ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
           store_directories(record)
-          
+
           record.send :"process_#{column}_upload=", true
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
@@ -61,7 +61,7 @@ module CarrierWave
       def store_directories(record)
         asset, asset_tmp = record.send(:"#{column}"), record.send(:"#{column}_tmp")
         if is_fog?
-          cache_url = "http://#{CarrierWave::Uploader::Base.fog_directory}.s3.amazonaws.com"
+          cache_url = "https://#{CarrierWave::Uploader::Base.fog_directory}.s3.amazonaws.com"
           @cache_path = "#{cache_url}/#{asset.cache_dir}/#{asset_tmp}"
           @tmp_directory = "#{asset.cache_dir}/#{asset_tmp}"
         else
