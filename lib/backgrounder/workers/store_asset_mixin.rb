@@ -40,7 +40,7 @@ module CarrierWave
           record.send :"#{column}_tmp=", nil
           record.send :"#{column}_processing=", false if record.respond_to?(:"#{column}_processing")
 
-          at 90, "Saving"
+          at 85, "Saving"
           status = Sidekiq::Status::get_all self.provider_job_id
           ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
@@ -49,6 +49,9 @@ module CarrierWave
           end
 
           if record.save!
+            at 95, "Cleaning up"
+            status = Sidekiq::Status::get_all self.provider_job_id
+            ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
             FileUtils.rm_r(tmp_directory, :force => true)
           end
         else
