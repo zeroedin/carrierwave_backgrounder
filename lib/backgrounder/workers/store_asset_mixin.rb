@@ -24,7 +24,7 @@ module CarrierWave
         file = Upload.find(args[1])
         at 60, "Performing"
         status = Sidekiq::Status::get_all self.provider_job_id
-        ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
+        ActionCable.server.broadcast "activity_channel_#{file.folder.id}", {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
         record = super(*args)
 
@@ -32,7 +32,7 @@ module CarrierWave
 
           at 75, "Uploading"
           status = Sidekiq::Status::get_all self.provider_job_id
-          ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
+          ActionCable.server.broadcast "activity_channel_#{file.folder.id}", {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
           store_directories(record)
 
@@ -42,7 +42,7 @@ module CarrierWave
 
           at 85, "Saving"
           status = Sidekiq::Status::get_all self.provider_job_id
-          ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
+          ActionCable.server.broadcast "activity_channel_#{file.folder.id}", {stage: "during", job: self.to_json, status: status.to_json, file: file}
 
           open(cache_path) do |f|
             record.send :"#{column}=", f
@@ -51,7 +51,7 @@ module CarrierWave
           if record.save!
             at 95, "Cleaning up"
             status = Sidekiq::Status::get_all self.provider_job_id
-            ActionCable.server.broadcast 'activity_channel', {stage: "during", job: self.to_json, status: status.to_json, file: file}
+            ActionCable.server.broadcast "activity_channel_#{file.folder.id}", {stage: "during", job: self.to_json, status: status.to_json, file: file}
             FileUtils.rm_r(tmp_directory, :force => true)
           end
         else
